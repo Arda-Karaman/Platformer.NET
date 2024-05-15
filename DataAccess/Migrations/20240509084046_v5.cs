@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class v5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,30 +28,14 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Characters",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Health = table.Column<double>(type: "float", nullable: false),
-                    Power = table.Column<double>(type: "float", nullable: false),
-                    Rank = table.Column<int>(type: "int", nullable: false),
-                    Guid = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Characters", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Levels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Score = table.Column<int>(type: "int", nullable: false),
-                    SaveSpot = table.Column<float>(type: "real", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SaveSpot = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
                     Guid = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -71,6 +56,29 @@ namespace DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Characters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Health = table.Column<double>(type: "float", nullable: false),
+                    Power = table.Column<double>(type: "float", nullable: false),
+                    Rank = table.Column<int>(type: "int", nullable: false),
+                    LevelId = table.Column<int>(type: "int", nullable: true),
+                    Guid = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Characters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Characters_Levels_LevelId",
+                        column: x => x.LevelId,
+                        principalTable: "Levels",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -125,6 +133,11 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Characters_LevelId",
+                table: "Characters",
+                column: "LevelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserCharacters_CharacterId",
                 table: "UserCharacters",
                 column: "CharacterId");
@@ -147,9 +160,6 @@ namespace DataAccess.Migrations
                 name: "Blocks");
 
             migrationBuilder.DropTable(
-                name: "Levels");
-
-            migrationBuilder.DropTable(
                 name: "UserCharacters");
 
             migrationBuilder.DropTable(
@@ -157,6 +167,9 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Levels");
 
             migrationBuilder.DropTable(
                 name: "Roles");

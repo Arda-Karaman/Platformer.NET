@@ -17,13 +17,13 @@ namespace Business.Models
         [Required(ErrorMessage = "{0} is required!")]
         [StringLength(30, MinimumLength = 4, ErrorMessage = "{0} must be minimum {2} maximum {1} characters")]
         public string Name { get; set; }
-        #endregion
+		#endregion
 
-        #region Extra Propertie
-        public int UserCount { get; set; }
+		#region Extra Properties
+		[DisplayName("User Count")]
+		public int UserCount { get; set; }
         public string Users { get; set; }
-        [DisplayName("Names")]
-        public string UserNamesOutput { get; set; }
+       
         #endregion
     }
 }

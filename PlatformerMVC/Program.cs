@@ -9,6 +9,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<Db>(options=>options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ILevelService, LevelService>();
 
 builder.Services.AddControllersWithViews();
 
