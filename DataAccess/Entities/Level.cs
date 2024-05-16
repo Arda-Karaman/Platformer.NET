@@ -2,6 +2,7 @@
 using DataAccess.Records.Bases;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,10 @@ namespace DataAccess.Entities
 {
     public class Level : Record
     {
-        public int Score { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; }
+        public int Score { get; set; }
         public DateTime? SaveSpot { get; set; }
         public Difficulties Difficulty { get; set; }
 

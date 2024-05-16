@@ -1,4 +1,5 @@
 ﻿using Business.Models;
+using Business.Services.Bases;
 using DataAccess.Context;
 using DataAccess.Entities;
 using DataAccess.Results;
@@ -19,13 +20,9 @@ namespace Business.Services
 		Result Update(LevelModel level);
 		Result Delete(int id);
 	}
-	public class LevelService : ILevelService
+	public class LevelService : ServiceBase, ILevelService
 	{
-		private readonly Db _db;
-		public LevelService(Db db)
-		{
-			_db = db;
-		}
+		public LevelService (Db db) : base(db) { }
 		
 		public IQueryable<LevelModel> Query()
 		{

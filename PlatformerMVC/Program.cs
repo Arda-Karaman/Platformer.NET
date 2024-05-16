@@ -10,6 +10,8 @@ builder.Services.AddDbContext<Db>(options=>options.UseSqlServer(connectionString
 
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILevelService, LevelService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 
 builder.Services.AddControllersWithViews();
 

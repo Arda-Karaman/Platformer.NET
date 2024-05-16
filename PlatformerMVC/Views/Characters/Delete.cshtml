@@ -1,16 +1,16 @@
-﻿@model LevelModel
+﻿@model CharacterModel
 @*Generated from Custom Template.*@
 @*Model namespace using directive should be added to _ViewImports.cshtml.*@
 
 @{
-    ViewData["Title"] = "Delete Level";
+    ViewData["Title"] = "Delete";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Level</h4>
+    <h4>Character</h4>
     <hr />
     <dl class="row">
         <dt class="col-2">
@@ -20,28 +20,28 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-2">
-            @Html.DisplayNameFor(model => model.Score)
+            @Html.DisplayNameFor(model => model.Health)
         </dt>
         <dd class="col-10">
-            @Html.DisplayFor(model => model.Score)
+            @Html.DisplayFor(model => model.Health)
         </dd>
         <dt class="col-2">
-            @Html.DisplayNameFor(model => model.SaveSpot)
+            @Html.DisplayNameFor(model => model.Power)
         </dt>
         <dd class="col-10">
-            @Html.DisplayFor(model => model.SaveSpot)
+            @Html.DisplayFor(model => model.Power)
         </dd>
         <dt class="col-2">
-            @Html.DisplayNameFor(model => model.Difficulty)
+            @Html.DisplayNameFor(model => model.Rank)
         </dt>
         <dd class="col-10">
-            @Html.DisplayFor(model => model.Difficulty)
+            @Html.DisplayFor(model => model.Rank)
         </dd>
         <dt class="col-2">
-            @Html.DisplayNameFor(model => model.Characters)
+            @Html.DisplayNameFor(model => model.Guid)
         </dt>
         <dd class="col-10">
-            @Html.Raw(Model.Characters)
+            @Html.DisplayFor(model => model.Guid)
         </dd>
     </dl>
     

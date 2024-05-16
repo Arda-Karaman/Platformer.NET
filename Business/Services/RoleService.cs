@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.Entities;
+using Business.Services.Bases;
 
 namespace Business.Services
 {
@@ -21,14 +22,9 @@ namespace Business.Services
         Result Delete(int id);
     }
 
-    public class RoleService : IRoleService
+    public class RoleService : ServiceBase, IRoleService
     {
-        private readonly Db _db;
-
-        public RoleService(Db db)
-        {
-            _db = db;
-        }
+        public RoleService(Db db) : base(db){}
 
         public Result Add(RoleModel model)
         {
