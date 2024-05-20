@@ -1,12 +1,17 @@
 ﻿using Business.Models;
 using Business.Services.Bases;
 using DataAccess.Context;
+using DataAccess.Entities;
+using DataAccess.Records.Bases;
+using DataAccess.Results;
 using DataAccess.Results.Bases;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 #nullable disable
 
 namespace Business.Services
@@ -29,18 +34,55 @@ namespace Business.Services
 
 		IQueryable<CharacterModel> ICharacterService.Query() 
 		{
-			return _db.Characters.OrderByDescending(g => g.Rank).ThenByDescending(g => g.Name).
+            //Include(g => g.Power).
+
+            return _db.Characters.Include(g => g.UserCharacters).
+				ThenInclude(uc => uc.User).OrderByDescending(g => g.Rank).ThenByDescending(g => g.Name).
 				Select(g => new CharacterModel()
 				{
 					Guid = g.Guid,
 					Id = g.Id,
 					Rank = g.Rank,
-					Name = g.Name
-				});
+					Name = g.Name,
+
+					Users = g.UserCharacters.Select(uc => new UserModel()
+					{
+						UserName = uc.User.UserName,
+						Tier = uc.User.Tier,
+
+					}).ToList(),
+
+					UserInput = g.UserCharacters.Select(uc => uc.UserId).ToList(),
+
+					RankOutput = g.Rank.ToString("C2"),
+					HealthOutput = g.Health.ToString("C2"),
+					PowerOutput = g.Power.ToString("C2")
+				}) ;
 		}
 		public Result Add(CharacterModel model)
 		{
-			throw new NotImplementedException();
+			if(_db.Characters.Any(c => c.Name.ToLower()==model.Name.ToLower().Trim()))
+			{
+				return new ErrorResult("Character with the same name exists!");
+			}
+			Character entity = new Character()
+			{
+				Name = model.Name.Trim(),
+				Guid = model.Guid,
+				Id = model.Id,
+				Rank = model.Rank,
+
+				UserCharacters = model.UserInput?.Select(userInput => new UserCharacter()
+				{
+					UserId = userInput
+				}).ToList(),
+			};
+
+			_db.Characters.Add(entity);
+			_db.SaveChanges();
+
+			model.Id = entity.Id;
+			return new SuccessResult();
 		}
 
 		public Result Delete(int id)
@@ -55,7 +97,26 @@ namespace Business.Services
 
 		public Result Update(CharacterModel model)
 		{
-			throw new NotImplementedException();
+			if (_db.Characters.Any(c => c.Id != model.Id && c.Name.ToLower() == model.Name.ToLower().Trim()))
+				return new ErrorResult("Game with same name exists");
+
+			Character entity = _db.Characters.Include(c => c.UserCharacters).SingleOrDefault(c => c.Id == model.Id);
+			if (entity == null) return new ErrorResult("Character not found");
+			_db.UserCharacters.RemoveRange(entity.UserCharacters);
+
+			entity.Id = model.Id;
+			entity.Rank = model.Rank;
+			entity.Name = model.Name;
+
+			entity.UserCharacters = model.UserInput?.Select(userInput => new UserCharacter()
+			{
+				UserId = userInput
+			}).ToList();
+
+			_db.Characters.Update(entity);
+			_db.SaveChanges();
+
+			return new SuccessResult();
 		}
 	}
 }

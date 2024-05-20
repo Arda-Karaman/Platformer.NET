@@ -28,5 +28,17 @@ namespace Business.Models
 		[DisplayName("Character Rank")]
 		public int Rank { get; set; }
 		#endregion
-	}
+
+		#region Extra Properties
+		[DisplayName("Users")]
+		public List<int>UserInput { get; set; }
+		public List<UserModel> Users { get; set; }
+		[DisplayName("Health")]
+		public string HealthOutput { get; set; }
+        [DisplayName("Power")]
+        public string PowerOutput { get; set; }
+        [DisplayName("Rank")]
+        public string RankOutput { get; set; }
+        #endregion
+    }
 }

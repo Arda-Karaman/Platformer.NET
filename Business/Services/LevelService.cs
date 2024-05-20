@@ -41,7 +41,6 @@ namespace Business.Services
 				return new ErrorResult("Level with the same name exists!");
 			Level entity = new Level()
 			{
-				Guid = Guid.NewGuid().ToString(),
 				Name = model.Name.Trim(),
 			};
 

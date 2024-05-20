@@ -10,18 +10,24 @@ using DataAccess.Context;
 using DataAccess.Entities;
 using Business.Services;
 using Business.Models;
+using PlatformerMVC.Controllers.Bases;
+using DataAccess.Results;
 
 //Generated from Custom Template.
 namespace PlatformerMVC.Controllers
 {
-    public class CharactersController : Controller
+    public class CharactersController : MVCControllerBase
     {
         // TODO: Add service injections here
         private readonly ICharacterService _characterService;
+        private readonly IUserService _userService;
+        private readonly ILevelService _levelService;
 
-        public CharactersController(ICharacterService characterService)
+        public CharactersController(ICharacterService characterService, IUserService userService, ILevelService levelService)
         {
             _characterService = characterService;
+            _userService = userService;
+            _levelService = levelService;
         }
 
         // GET: Characters
@@ -34,10 +40,10 @@ namespace PlatformerMVC.Controllers
         // GET: Characters/Details/5
         public IActionResult Details(int id)
         {
-            CharacterModel character = null; // TODO: Add get item service logic here
+            CharacterModel character = _characterService.GetItem(id); // TODO: Add get item service logic here
             if (character == null)
             {
-                return NotFound();
+                return View("Error", $"Character with {id} not found");
             }
             return View(character);
         }
@@ -45,7 +51,8 @@ namespace PlatformerMVC.Controllers
         // GET: Characters/Create
         public IActionResult Create()
         {
-            // TODO: Add get related items service logic here to set ViewData if necessary
+            ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "UserName");
             return View();
         }
 
@@ -59,21 +66,27 @@ namespace PlatformerMVC.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add insert service logic here
-                return RedirectToAction(nameof(Index));
+                var result = _characterService.Add(character);
+                if(result.IsSuccessful)
+                    return RedirectToAction(nameof(Details), new { id = character.Id });
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
+            ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
             return View(character);
         }
 
         // GET: Characters/Edit/5
         public IActionResult Edit(int id)
         {
-            CharacterModel character = null; // TODO: Add get item service logic here
+            CharacterModel character = _characterService.GetItem(id); // TODO: Add get item service logic here
             if (character == null)
             {
-                return NotFound();
+                return View("Error", $"Game with {id} not found");
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
+            ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
             return View(character);
         }
 
@@ -87,9 +100,12 @@ namespace PlatformerMVC.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add update service logic here
-                return RedirectToAction(nameof(Index));
+                var result = _characterService.Update(character);
+                if (result.IsSuccessful) return RedirectToAction(nameof(Details), new { id = character.Id });
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
+            ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
             return View(character);
         }
 

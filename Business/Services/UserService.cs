@@ -58,7 +58,6 @@ namespace Business.Services
                 return new ErrorResult("Active user with the same user name exists!");
             User entity = new User()
             {
-                Guid = model.Guid,
                 isActive = model.isActive,
                 Password = model.Password,
                 RoleId = model.RoleId.Value,

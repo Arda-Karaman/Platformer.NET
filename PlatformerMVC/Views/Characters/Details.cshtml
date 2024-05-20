@@ -3,7 +3,7 @@
 @*Model namespace using directive should be added to _ViewImports.cshtml.*@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Character Details";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -21,34 +21,38 @@
         </dl>
         <dl class="row">
             <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Health)
+                @Html.DisplayNameFor(model => model.HealthOutput)
             </dt>
             <dd class="col-10">
-                @Html.DisplayFor(model => model.Health)
+            @Html.DisplayFor(model => model.HealthOutput)
             </dd>
         </dl>
         <dl class="row">
             <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Power)
+                @Html.DisplayNameFor(model => model.Users)
             </dt>
             <dd class="col-10">
-                @Html.DisplayFor(model => model.Power)
+            @foreach(var user in Model.Users)
+            {
+                @(user.UserName + "(" + user.Tier + ")")
+                <br>
+            }
             </dd>
         </dl>
         <dl class="row">
             <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Rank)
+                @Html.DisplayNameFor(model => model.PowerOutput)
             </dt>
             <dd class="col-10">
-                @Html.DisplayFor(model => model.Rank)
+            @Html.DisplayFor(model => model.PowerOutput)
             </dd>
         </dl>
         <dl class="row">
             <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Guid)
+                @Html.DisplayNameFor(model => model.RankOutput)
             </dt>
             <dd class="col-10">
-                @Html.DisplayFor(model => model.Guid)
+                @Html.DisplayFor(model => model.RankOutput)
             </dd>
         </dl>
 </div>

@@ -11,11 +11,12 @@ using DataAccess.Entities;
 using Business.Services;
 using Business.Models;
 using DataAccess.Results.Bases;
+using PlatformerMVC.Controllers.Bases;
 
 //Generated from Custom Template.
 namespace PlatformerMVC.Controllers
 {
-    public class LevelsController : Controller
+    public class LevelsController : MVCControllerBase
     {
         // TODO: Add service injections here
         private readonly ILevelService _levelService;

@@ -33,7 +33,6 @@ namespace Business.Services
 
             Role entity = new Role()
             {
-                Guid = Guid.NewGuid().ToString(),
                 Name = model.Name.Trim(),
             };
             _db.Roles.Add(entity);
