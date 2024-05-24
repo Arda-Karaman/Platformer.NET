@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(Db))]
-    [Migration("20240509084046_v5")]
-    partial class v5
+    [Migration("20240522110827_v23")]
+    partial class v23
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("float");
 
                     b.Property<int?>("LevelId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -100,7 +101,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("SaveSpot")
                         .HasColumnType("datetime2");
@@ -197,9 +200,13 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Character", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Level", null)
+                    b.HasOne("DataAccess.Entities.Level", "Level")
                         .WithMany("Characters")
-                        .HasForeignKey("LevelId");
+                        .HasForeignKey("LevelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Level");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>

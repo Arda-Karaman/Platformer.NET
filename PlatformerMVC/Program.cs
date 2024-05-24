@@ -1,8 +1,36 @@
 using Business.Services;
 using DataAccess.Context;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using PlatformerMVC.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region AppSettings
+// Way 1:
+//builder.Configuration.GetSection("AppSettings");
+// Way 2:
+builder.Configuration.GetSection(nameof(AppSettings)).Bind(new AppSettings());
+#endregion
+
+#region Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Home/Login";
+        options.AccessDeniedPath = "/Account/Home/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(1);
+        options.SlidingExpiration = true;
+    });
+#endregion
+
+#region Session
+builder.Services.AddSession(config =>
+{
+    config.IdleTimeout = TimeSpan.FromMinutes(30); // default is 20 minutes
+    config.IOTimeout = Timeout.InfiniteTimeSpan;
+});
+#endregion
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -30,7 +58,23 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+#region Authentication
+app.UseAuthentication();
+#endregion
+
 app.UseAuthorization();
+#region Session
+app.UseSession();
+#endregion
+
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+});
 
 app.MapControllerRoute(
     name: "default",

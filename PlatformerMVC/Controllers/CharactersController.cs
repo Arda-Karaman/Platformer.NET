@@ -12,10 +12,12 @@ using Business.Services;
 using Business.Models;
 using PlatformerMVC.Controllers.Bases;
 using DataAccess.Results;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Template.
 namespace PlatformerMVC.Controllers
 {
+    [Authorize]
     public class CharactersController : MVCControllerBase
     {
         // TODO: Add service injections here
@@ -49,6 +51,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Characters/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
@@ -61,6 +64,7 @@ namespace PlatformerMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(CharacterModel character)
         {
             if (ModelState.IsValid)
@@ -72,21 +76,22 @@ namespace PlatformerMVC.Controllers
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
             ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
-            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "UserName");
             return View(character);
         }
 
         // GET: Characters/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             CharacterModel character = _characterService.GetItem(id); // TODO: Add get item service logic here
             if (character == null)
             {
-                return View("Error", $"Game with {id} not found");
+                return View("Error", $"Character with {id} not found");
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
             ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
-            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "UserName");      
             return View(character);
         }
 
@@ -95,6 +100,7 @@ namespace PlatformerMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(CharacterModel character)
         {
             if (ModelState.IsValid)
@@ -105,27 +111,16 @@ namespace PlatformerMVC.Controllers
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
             ViewData["LevelId"] = new SelectList(_levelService.Query().ToList(), "Id", "Name");
-            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "Username");
+            ViewBag.Users = new MultiSelectList(_userService.GetList(), "Id", "UserName");
             return View(character);
         }
 
         // GET: Characters/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
-            CharacterModel character = null; // TODO: Add get item service logic here
-            if (character == null)
-            {
-                return NotFound();
-            }
-            return View(character);
-        }
-
-        // POST: Characters/Delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            // TODO: Add delete service logic here
+            var result = _characterService.Delete(id);
+            TempData["Message"] =  result.Message;
             return RedirectToAction(nameof(Index));
         }
 	}

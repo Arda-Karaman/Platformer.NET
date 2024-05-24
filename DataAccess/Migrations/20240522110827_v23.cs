@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class v5 : Migration
+    public partial class v23 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,8 +33,8 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Score = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SaveSpot = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
                     Guid = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -68,7 +68,7 @@ namespace DataAccess.Migrations
                     Health = table.Column<double>(type: "float", nullable: false),
                     Power = table.Column<double>(type: "float", nullable: false),
                     Rank = table.Column<int>(type: "int", nullable: false),
-                    LevelId = table.Column<int>(type: "int", nullable: true),
+                    LevelId = table.Column<int>(type: "int", nullable: false),
                     Guid = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -78,7 +78,8 @@ namespace DataAccess.Migrations
                         name: "FK_Characters_Levels_LevelId",
                         column: x => x.LevelId,
                         principalTable: "Levels",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

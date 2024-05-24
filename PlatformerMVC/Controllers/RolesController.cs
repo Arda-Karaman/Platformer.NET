@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DataAccess.Context;
 using DataAccess.Entities;
 using Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Business.Models;
 using DataAccess.Results.Bases;
 using PlatformerMVC.Controllers.Bases;
@@ -16,6 +17,7 @@ using PlatformerMVC.Controllers.Bases;
 //Generated from Custom Template.
 namespace PlatformerMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RolesController : MVCControllerBase
     {
         // TODO: Add service injections here

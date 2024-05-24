@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Context;
 using DataAccess.Entities;
@@ -16,6 +17,7 @@ using PlatformerMVC.Controllers.Bases;
 //Generated from Custom Template.
 namespace PlatformerMVC.Controllers
 {
+    [Authorize]
     public class UsersController : MVCControllerBase
     {
         // TODO: Add service injections here
@@ -29,6 +31,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Users
+        [AllowAnonymous]
         public IActionResult Index()
         {
             List<UserModel> userList = _userService.GetList(); // TODO: Add get collection service logic here
@@ -36,6 +39,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Users/Details/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Details(int id)
         {
             UserModel user = _userService.GetItem(id); // TODO: Add get item service logic here
@@ -47,6 +51,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Users/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             // TODO: Add get related items service logic here to set ViewData if necessary
@@ -59,6 +64,7 @@ namespace PlatformerMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(UserModel user)
         {
             if (ModelState.IsValid)
@@ -77,6 +83,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             UserModel user = _userService.GetItem(id); // TODO: Add get item service logic here
@@ -94,6 +101,7 @@ namespace PlatformerMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(UserModel user)
         {
             if (ModelState.IsValid)
@@ -112,6 +120,7 @@ namespace PlatformerMVC.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             UserModel user = _userService.GetItem(id); // TODO: Add get item service logic here
@@ -125,6 +134,7 @@ namespace PlatformerMVC.Controllers
         // POST: Users/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             Result result = _userService.Delete(id);

@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.Rank)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Guid)
+                @Html.DisplayNameFor(model => model.LevelOutput)
             </th>
             <th></th>
         </tr>
@@ -48,7 +48,7 @@
 						@Html.DisplayFor(modelItem => item.Rank)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Guid)
+						@Html.DisplayFor(modelItem => item.LevelOutput)
 					</td>
 					<td>
 						<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;

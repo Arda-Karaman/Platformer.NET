@@ -1,7 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using PlatformerMVC.Settings
+@{
+    ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to the game</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4">Welcome to @AppSettings.Title <b>@User.Identity.Name</b></h1>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to @AppSettings.Title</h1>
+    }
 </div>
+

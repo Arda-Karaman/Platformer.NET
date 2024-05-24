@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Mysqlx.Notice.Warning.Types;
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 #nullable disable
 
@@ -32,11 +33,11 @@ namespace Business.Services
 		{
 		}
 
-		IQueryable<CharacterModel> ICharacterService.Query() 
+		IQueryable<CharacterModel> ICharacterService.Query()
 		{
             //Include(g => g.Power).
 
-            return _db.Characters.Include(g => g.UserCharacters).
+			return _db.Characters.Include(g => g.Level).Include(g => g.UserCharacters).
 				ThenInclude(uc => uc.User).OrderByDescending(g => g.Rank).ThenByDescending(g => g.Name).
 				Select(g => new CharacterModel()
 				{
@@ -44,6 +45,9 @@ namespace Business.Services
 					Id = g.Id,
 					Rank = g.Rank,
 					Name = g.Name,
+					Health = g.Health,
+					Power = g.Power,
+					LevelId = g.LevelId,
 
 					Users = g.UserCharacters.Select(uc => new UserModel()
 					{
@@ -54,9 +58,9 @@ namespace Business.Services
 
 					UserInput = g.UserCharacters.Select(uc => uc.UserId).ToList(),
 
-					RankOutput = g.Rank.ToString("C2"),
-					HealthOutput = g.Health.ToString("C2"),
-					PowerOutput = g.Power.ToString("C2")
+					RankOutput = g.Rank.ToString(),
+					HealthOutput = g.Health.ToString(),
+					PowerOutput = g.Power.ToString()
 				}) ;
 		}
 		public Result Add(CharacterModel model)
@@ -71,7 +75,10 @@ namespace Business.Services
 				Guid = model.Guid,
 				Id = model.Id,
 				Rank = model.Rank,
-
+				Health = model.Health,
+				Power = model.Power,
+				LevelId = model.LevelId,
+				
 				UserCharacters = model.UserInput?.Select(userInput => new UserCharacter()
 				{
 					UserId = userInput
@@ -87,8 +94,17 @@ namespace Business.Services
 
 		public Result Delete(int id)
 		{
-			throw new NotImplementedException();
-		}
+            Character entity = _db.Characters.Include(c => c.UserCharacters).SingleOrDefault(c => c.Id == id);
+            if (entity is null)
+                return new ErrorResult("Character not found!");
+
+            _db.UserCharacters.RemoveRange(entity.UserCharacters);
+
+            _db.Characters.Remove(entity);
+            _db.SaveChanges();
+
+            return new SuccessResult("Character deleted successfully.");
+        }
 
 		public IQueryable<CharacterModel> Query()
 		{
@@ -98,15 +114,19 @@ namespace Business.Services
 		public Result Update(CharacterModel model)
 		{
 			if (_db.Characters.Any(c => c.Id != model.Id && c.Name.ToLower() == model.Name.ToLower().Trim()))
-				return new ErrorResult("Game with same name exists");
+				return new ErrorResult("Character with same name exists");
 
 			Character entity = _db.Characters.Include(c => c.UserCharacters).SingleOrDefault(c => c.Id == model.Id);
 			if (entity == null) return new ErrorResult("Character not found");
 			_db.UserCharacters.RemoveRange(entity.UserCharacters);
 
+			entity.Name = model.Name.Trim();
+			entity.Guid = model.Guid;
 			entity.Id = model.Id;
 			entity.Rank = model.Rank;
-			entity.Name = model.Name;
+			entity.Health = model.Health;
+			entity.Power = model.Power;
+			entity.LevelId = model.LevelId;
 
 			entity.UserCharacters = model.UserInput?.Select(userInput => new UserCharacter()
 			{

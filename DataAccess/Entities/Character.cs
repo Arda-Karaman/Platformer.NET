@@ -17,6 +17,9 @@ namespace DataAccess.Entities
         public double Health { get; set; }
         public double Power { get; set; }
         public int Rank { get; set; }
+		[Required]
+		public int? LevelId { get; set; }
+        public Level Level { get; set; }
         public List<UserCharacter> UserCharacters { get; set; }
 
     }
